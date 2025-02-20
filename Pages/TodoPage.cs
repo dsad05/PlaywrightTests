@@ -1,6 +1,6 @@
 using Microsoft.Playwright;
 
-namespace TODO_MVC_Pages
+namespace PlaywrightTests.Pages
 {
     public class TodoPage
     {
@@ -20,7 +20,8 @@ namespace TODO_MVC_Pages
         public ILocator Input => _input;
         public ILocator TodoList => _todoList;
 
-        public async Task InitializePage(){
+        public async Task InitializePage()
+        {
             await _page.GotoAsync(BASE_URL);
         }
 
@@ -36,11 +37,12 @@ namespace TODO_MVC_Pages
             return items.Contains(task);
         }
 
-        public async Task CompleteTodo(string task){
+        public async Task CompleteTodo(string task)
+        {
 
             var todoToCheck = _todoList.GetByTestId("todo-item").Filter(new() { HasText = task });
             var checkbox = todoToCheck.GetByTestId("todo-item-toggle");
-            await checkbox.CheckAsync(); 
+            await checkbox.CheckAsync();
         }
         public async Task<bool> IsTodoCompleted(string task)
         {
@@ -50,37 +52,47 @@ namespace TODO_MVC_Pages
             return await checkbox.IsCheckedAsync();
         }
 
-        public async Task ShowCompleted(){
-            //await Page.GetByRole(AriaRole.Link, new() { Name = "Completed" }).ClickAsync();
+        public async Task ShowCompleted()
+        {
+            await _page.GetByRole(AriaRole.Link, new() { Name = "Completed" }).ClickAsync();
         }
 
-        public async Task ShowAll(){
-            //await Page.GetByRole(AriaRole.Link, new() { Name = "All" }).ClickAsync();
+        public async Task ShowAll()
+        {
+            await _page.GetByRole(AriaRole.Link, new() { Name = "All" }).ClickAsync();
         }
 
-        public async Task ShowActive(){
-            //await Page.GetByRole(AriaRole.Link, new() { Name = "Active" }).ClickAsync();
+        public async Task ShowActive()
+        {
+            await _page.GetByRole(AriaRole.Link, new() { Name = "Active" }).ClickAsync();
         }
 
-        public async Task ClearCompleted(){
+        public async Task ClearCompleted()
+        {
             await _page.GetByRole(AriaRole.Button, new() { Name = "Clear completed" }).ClickAsync();
         }
 
-        public async Task<bool> IsTodoListEmpty(){
+        public async Task<bool> IsTodoListEmpty()
+        {
             var items = _todoList.GetByRole(AriaRole.Listitem);
             int count = await items.CountAsync();
             return count.Equals(0);
         }
 
-        public async Task DeleteTodo(string task){
+        public async Task DeleteTodo(string task)
+        {
             var todoToDelete = _todoList.GetByTestId("todo-item").Filter(new() { HasText = task });
             await todoToDelete.HoverAsync();
             var delete = todoToDelete.GetByTestId("todo-item-button");
             await delete.ClickAsync();
         }
 
-        public async Task EditTodo(string task){
-            //DblClickAsync()
+        public async Task EditTodo(string task)
+        {
+            var todoToEdit = _todoList.GetByTestId("todo-item").Filter(new() { HasText = task });
+            await todoToEdit.DblClickAsync();
+            //TODO: fill //TODO: save
+
         }
 
     }

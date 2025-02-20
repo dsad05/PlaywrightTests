@@ -1,4 +1,5 @@
 using Microsoft.Playwright;
+using System.Net;
 
 namespace PlaywrightTests.Pages
 {
@@ -34,7 +35,9 @@ namespace PlaywrightTests.Pages
         public async Task<bool> IsTodoVisible(string task)
         {
             var items = await _todoList.InnerTextAsync();
-            return items.Contains(task);
+            string decodedItems = WebUtility.HtmlDecode(items);
+            Console.WriteLine($"Checking for task: {task}, Found items: {decodedItems}");
+            return decodedItems.Contains(task);
         }
 
         public async Task CompleteTodo(string task)

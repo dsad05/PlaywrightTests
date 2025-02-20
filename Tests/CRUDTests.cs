@@ -3,7 +3,7 @@ using Microsoft.Playwright;
 using PlaywrightTests.Pages;
 using PlaywrightTests.Helpers;
 
-namespace PlaywrightTests.CRUDTests
+namespace PlaywrightTests.Tests
 {
     [TestClass]
     public class CRUDTests : PageTest

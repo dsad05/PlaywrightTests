@@ -1,11 +1,11 @@
-namespace TODO_MVC.Helpers;
+namespace PlaywrightTests.Helpers;
 
 public static class TestDataGenerator
 {
-    public static string GenerateUniqueTodoName()
+    public static string GenerateUniqueTodoName(string taskName = "Task")
     {
 
-        return $"Task_{DateTime.Now:s}";
+        return $"{taskName}_{DateTime.Now:s}";
         
     }
 }

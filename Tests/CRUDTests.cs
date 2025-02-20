@@ -1,12 +1,12 @@
 using Microsoft.Playwright.MSTest;
 using Microsoft.Playwright;
-using TODO_MVC_Pages;
-using TODO_MVC.Helpers;
+using PlaywrightTests.Pages;
+using PlaywrightTests.Helpers;
 
-namespace TODO_MVC.Tests.UnitTests
+namespace PlaywrightTests.CRUDTests
 {
     [TestClass]
-    public class AddTodoUnit : PageTest
+    public class CRUDTests : PageTest
     {
         private TodoPage? _todoPage;
         private TodoPage TodoPage => _todoPage ?? throw new InvalidOperationException("TestSetup() was not run!");

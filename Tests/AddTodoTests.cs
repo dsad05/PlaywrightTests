@@ -1,26 +1,33 @@
-using Microsoft.Playwright.MSTest;
 using Microsoft.Playwright;
 using PlaywrightTests.Pages;
 using PlaywrightTests.Helpers;
-using System.Web;
 
-
-
-
-namespace PlaywrightTests.AddTodoTests
+namespace PlaywrightTests.Tests
 {
     [TestClass]
-    public class AddTodoTests : PageTest
+    public class AddTodoTests
     {
+        private IPlaywright? _playwright;
+        private IBrowser? _browser;
+        private IPage? _page;
         private TodoPage? _todoPage;
-        private TodoPage TodoPage => _todoPage ?? throw new InvalidOperationException("TestSetup() was not run!");
 
         [TestInitialize]
         public async Task TestSetup()
         {
-            _todoPage = new TodoPage(Page);
+            _playwright = await Playwright.CreateAsync();
+            _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+            {
+                Headless = false,
+                SlowMo = 100
+            });
+
+            var context = await _browser.NewContextAsync();
+            _page = await context.NewPageAsync();
+
+            _todoPage = new TodoPage(_page);
             await _todoPage.InitializePage();
-            Assert.IsTrue(await TodoPage.IsTodoListEmpty());
+            Assert.IsTrue(await _todoPage.IsTodoListEmpty());
         }
 
         public static IEnumerable<object[]> TodoNamesData
@@ -44,14 +51,15 @@ namespace PlaywrightTests.AddTodoTests
         {
             string generatedTodoName = TestDataGenerator.GenerateUniqueTodoName(todoName);
             Console.WriteLine(generatedTodoName);
-            await TodoPage.AddTodo(todoName);
-            
-            string todoListHtml = await TodoPage.TodoList.InnerHTMLAsync();
-            Console.WriteLine($"Todo List HTML: {todoListHtml}");
+            await _todoPage!.AddTodo(generatedTodoName);
+            Assert.IsTrue(await _todoPage.IsTodoVisible(generatedTodoName));
+        }
 
-            Assert.IsTrue(await TodoPage.IsTodoVisible(todoName));
-
-            Console.WriteLine(generatedTodoName);
+        [TestCleanup]
+        public async Task Cleanup()
+        {
+            await _browser?.CloseAsync();
+            _playwright?.Dispose();
         }
     }
 }
